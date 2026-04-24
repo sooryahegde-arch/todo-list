@@ -94,9 +94,9 @@ function SettingsModal({ isOpen, onClose, config, setConfig }) {
           </button>
         </div>
 
-        <div style={{ display: 'flex', gap: '2rem', flex: 1, minHeight: 0 }}>
+        <div className="settings-layout" style={{ display: 'flex', gap: '2rem', flex: 1, minHeight: 0 }}>
           {/* Left Panel: Work Types */}
-          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(255,255,255,0.1)', paddingRight: '2rem' }}>
+          <div className="settings-panel" style={{ flex: 1, display: 'flex', flexDirection: 'column', borderRight: '1px solid rgba(255,255,255,0.1)', paddingRight: '2rem' }}>
             <h3 style={{ marginBottom: '1rem', fontSize: '1rem' }}>Work Types</h3>
             
             <form onSubmit={handleAddWorkType} style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem' }}>

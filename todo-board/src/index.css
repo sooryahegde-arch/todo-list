@@ -134,9 +134,10 @@ h1, h2, h3, h4, h5, h6 {
   overflow-x: auto;
   overflow-y: hidden;
   padding-bottom: 1rem;
+  scroll-snap-type: x mandatory;
+  scroll-padding: 0 1.5rem;
 }
 
-/* Column */
 .column {
   flex: 0 0 320px;
   background: rgba(15, 23, 42, 0.4);
@@ -148,6 +149,7 @@ h1, h2, h3, h4, h5, h6 {
   flex-direction: column;
   height: 100%;
   transition: all 0.3s ease;
+  scroll-snap-align: start;
 }
 
 .column.drag-over {
@@ -514,4 +516,51 @@ h1, h2, h3, h4, h5, h6 {
   border-left: none;
   border-top: none;
   border-bottom-right-radius: 8px;
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .app-container {
+    padding: 1rem;
+  }
+  .app-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+  .app-header > div:last-child {
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  .btn {
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+  }
+  .column {
+    flex: 0 0 280px; /* Slightly narrower columns for mobile */
+  }
+  .modal-content {
+    padding: 1.5rem;
+  }
+  .form-row {
+    flex-direction: column !important;
+    gap: 0 !important;
+  }
+  .form-row > div {
+    margin-bottom: 1rem;
+  }
+  .form-row > div:last-child {
+    margin-bottom: 0;
+  }
+  .settings-layout {
+    flex-direction: column !important;
+  }
+  .settings-panel {
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding-right: 0 !important;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+  }
 }

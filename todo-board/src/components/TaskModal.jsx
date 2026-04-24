@@ -112,7 +112,7 @@ function TaskModal({ isOpen, onClose, onSave, taskToEdit = null, workTypesConfig
             />
           </div>
 
-          <div className="form-group" style={{ display: 'flex', gap: '1rem' }}>
+          <div className="form-group form-row" style={{ display: 'flex', gap: '1rem' }}>
             <div style={{ flex: 1 }}>
               <label className="form-label">Status</label>
               <select 
@@ -138,7 +138,7 @@ function TaskModal({ isOpen, onClose, onSave, taskToEdit = null, workTypesConfig
             </div>
           </div>
 
-          <div className="form-group" style={{ display: 'flex', gap: '1rem' }}>
+          <div className="form-group form-row" style={{ display: 'flex', gap: '1rem' }}>
             <div style={{ flex: 1 }}>
               <label className="form-label">Work Type</label>
               <select 
