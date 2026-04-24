@@ -145,9 +145,19 @@ function App() {
   return (
     <div className="app-container">
       <header className="app-header animate-fade-in">
-        <div className="app-title">
-          <Kanban size={40} className="text-indigo-400" />
-          <span>TaskFlow</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
+          <div className="app-title">
+            <Kanban size={40} className="text-indigo-400" />
+            <span>TaskFlow</span>
+          </div>
+          <div className="profile-frame">
+            <img 
+              src="/profile.jpg" 
+              alt="Profile" 
+              className="profile-img" 
+              onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff'; }} 
+            />
+          </div>
         </div>
         <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
           {!isSupabaseConfigured && (
