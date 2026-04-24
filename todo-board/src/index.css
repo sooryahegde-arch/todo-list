@@ -372,6 +372,11 @@ h1, h2, h3, h4, h5, h6 {
   box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
 }
 
+.form-select option {
+  background-color: var(--bg-dark);
+  color: var(--text-main);
+}
+
 .form-textarea {
   min-height: 100px;
   resize: vertical;
