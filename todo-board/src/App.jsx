@@ -3,6 +3,7 @@ import { PlusCircle, Kanban, X } from 'lucide-react';
 import TaskBoard from './components/TaskBoard';
 import TaskModal from './components/TaskModal';
 import SettingsModal from './components/SettingsModal';
+import Login from './components/Login';
 import { supabase, isSupabaseConfigured } from './supabase';
 
 function App() {
@@ -13,6 +14,9 @@ function App() {
   const [isProfileExpanded, setIsProfileExpanded] = useState(false);
   const [hideCompleted, setHideCompleted] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [session, setSession] = useState(null);
+  const [isLocalMode, setIsLocalMode] = useState(!isSupabaseConfigured);
+  const [authLoading, setAuthLoading] = useState(true);
   
   const [workTypesConfig, setWorkTypesConfig] = useState(() => {
     const saved = localStorage.getItem('todo-work-types');
@@ -26,6 +30,26 @@ function App() {
   useEffect(() => {
     localStorage.setItem('todo-work-types', JSON.stringify(workTypesConfig));
   }, [workTypesConfig]);
+
+  // Auth Status
+  useEffect(() => {
+    if (isSupabaseConfigured) {
+      supabase.auth.getSession().then(({ data: { session } }) => {
+        setSession(session);
+        setAuthLoading(false);
+      });
+
+      const {
+        data: { subscription },
+      } = supabase.auth.onAuthStateChange((_event, session) => {
+        setSession(session);
+      });
+
+      return () => subscription.unsubscribe();
+    } else {
+      setAuthLoading(false);
+    }
+  }, []);
 
   // Initial Data Load
   useEffect(() => {
@@ -56,7 +80,7 @@ function App() {
     };
 
     fetchTasks();
-  }, []);
+  }, [session, isLocalMode]); // Refetch when auth changes
 
   // Save to Local Storage as a fallback/cache
   useEffect(() => {
@@ -159,6 +183,26 @@ function App() {
     }
   };
 
+  const handleLogout = async () => {
+    if (isSupabaseConfigured) {
+      await supabase.auth.signOut();
+    } else {
+      setIsLocalMode(false); // Back to login screen (though local mode bypassing it)
+    }
+  };
+
+  if (authLoading) {
+    return (
+      <div className="app-container" style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <span style={{ color: 'var(--text-muted)' }}>Loading...</span>
+      </div>
+    );
+  }
+
+  if (!session && !isLocalMode) {
+    return <Login onBypass={() => setIsLocalMode(true)} />;
+  }
+
   return (
     <div className="app-container">
       <header className="app-header animate-fade-in">
@@ -181,6 +225,11 @@ function App() {
             <span style={{ fontSize: '0.8rem', color: '#f59e0b', background: 'rgba(245, 158, 11, 0.1)', padding: '0.25rem 0.5rem', borderRadius: '0.5rem' }}>
               Local Mode (No Supabase)
             </span>
+          )}
+          {session && (
+            <button className="btn" onClick={handleLogout}>
+              Logout
+            </button>
           )}
           <button 
             className={`btn ${hideCompleted ? 'btn-primary' : ''}`}
