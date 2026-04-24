@@ -414,3 +414,104 @@ h1, h2, h3, h4, h5, h6 {
   gap: 1rem;
   margin-top: 2rem;
 }
+
+/* Expanded Profile Lightbox Styles */
+.profile-expanded-container {
+  position: relative;
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: scale(0.9);
+  opacity: 0;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal-backdrop.open .profile-expanded-container {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.profile-close-btn {
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  background: var(--bg-dark);
+  border-radius: 50%;
+  padding: 8px;
+  color: #fff;
+  z-index: 100;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+.profile-close-btn:hover {
+  background: #ef4444;
+  color: white;
+  transform: rotate(90deg) scale(1.1);
+}
+
+.custom-photo-frame {
+  position: relative;
+  padding: 12px;
+  background: rgba(30, 41, 59, 0.9);
+  border-radius: 8px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5), 0 0 40px rgba(99, 102, 241, 0.3);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.full-profile-img {
+  max-height: 75vh;
+  max-width: 85vw;
+  object-fit: contain;
+  border-radius: 4px;
+  display: block;
+}
+
+.frame-decor {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border: 3px solid #8b5cf6;
+  transition: all 0.3s ease;
+}
+
+.custom-photo-frame:hover .frame-decor {
+  width: 50px;
+  height: 50px;
+  border-color: #a5b4fc;
+}
+
+.frame-decor.tl {
+  top: -6px;
+  left: -6px;
+  border-right: none;
+  border-bottom: none;
+  border-top-left-radius: 8px;
+}
+
+.frame-decor.tr {
+  top: -6px;
+  right: -6px;
+  border-left: none;
+  border-bottom: none;
+  border-top-right-radius: 8px;
+}
+
+.frame-decor.bl {
+  bottom: -6px;
+  left: -6px;
+  border-right: none;
+  border-top: none;
+  border-bottom-left-radius: 8px;
+}
+
+.frame-decor.br {
+  bottom: -6px;
+  right: -6px;
+  border-left: none;
+  border-top: none;
+  border-bottom-right-radius: 8px;
+}

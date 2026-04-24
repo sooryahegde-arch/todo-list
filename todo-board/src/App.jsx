@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { PlusCircle, Kanban } from 'lucide-react';
+import { PlusCircle, Kanban, X } from 'lucide-react';
 import TaskBoard from './components/TaskBoard';
 import TaskModal from './components/TaskModal';
 import { supabase, isSupabaseConfigured } from './supabase';
@@ -9,6 +9,7 @@ function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isProfileExpanded, setIsProfileExpanded] = useState(false);
 
   // Initial Data Load
   useEffect(() => {
@@ -150,7 +151,7 @@ function App() {
             <Kanban size={40} className="text-indigo-400" />
             <span>TaskFlow</span>
           </div>
-          <div className="profile-frame">
+          <div className="profile-frame" onClick={() => setIsProfileExpanded(true)} style={{ cursor: 'pointer' }}>
             <img 
               src="/profile.jpg" 
               alt="Profile" 
@@ -196,6 +197,29 @@ function App() {
         onSave={handleSaveTask} 
         taskToEdit={editingTask}
       />
+
+      <div className={`modal-backdrop ${isProfileExpanded ? 'open' : ''}`} onClick={() => setIsProfileExpanded(false)}>
+        <div 
+          className="profile-expanded-container" 
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button className="icon-btn profile-close-btn" onClick={() => setIsProfileExpanded(false)}>
+            <X size={24} />
+          </button>
+          <div className="custom-photo-frame">
+            <img 
+              src="/profile.jpg" 
+              alt="Profile Expanded" 
+              className="full-profile-img"
+              onError={(e) => { e.target.src = 'https://ui-avatars.com/api/?name=Admin&background=6366f1&color=fff&size=500'; }}
+            />
+            <div className="frame-decor tl"></div>
+            <div className="frame-decor tr"></div>
+            <div className="frame-decor bl"></div>
+            <div className="frame-decor br"></div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
