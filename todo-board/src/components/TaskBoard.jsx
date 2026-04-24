@@ -9,10 +9,12 @@ const COLUMNS = [
   { id: 'transferred', title: 'Transferred', color: 'var(--status-transferred)' },
 ];
 
-function TaskBoard({ tasks, onUpdateStatus, onDeleteTask, onEditTask }) {
+function TaskBoard({ tasks, onUpdateStatus, onDeleteTask, onEditTask, hideCompleted }) {
+  const visibleColumns = hideCompleted ? COLUMNS.filter(c => c.id !== 'completed') : COLUMNS;
+
   return (
     <>
-      {COLUMNS.map(column => (
+      {visibleColumns.map(column => (
         <TaskColumn 
           key={column.id}
           column={column}

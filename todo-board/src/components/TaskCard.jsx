@@ -49,6 +49,13 @@ function TaskCard({ task, color, onDelete, onEdit }) {
         </div>
       )}
 
+      {(task.workType || task.category) && (
+        <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.75rem', flexWrap: 'wrap' }}>
+          {task.workType && <span style={{ fontSize: '0.7rem', padding: '0.1rem 0.4rem', borderRadius: '4px', background: 'rgba(99, 102, 241, 0.2)', color: '#a5b4fc' }}>{task.workType}</span>}
+          {task.category && <span style={{ fontSize: '0.7rem', padding: '0.1rem 0.4rem', borderRadius: '4px', background: 'rgba(245, 158, 11, 0.2)', color: '#fcd34d' }}>{task.category}</span>}
+        </div>
+      )}
+
       <div className="task-meta">
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
           <div className="task-date">

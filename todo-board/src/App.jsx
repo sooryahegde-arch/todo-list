@@ -10,6 +10,7 @@ function App() {
   const [editingTask, setEditingTask] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isProfileExpanded, setIsProfileExpanded] = useState(false);
+  const [hideCompleted, setHideCompleted] = useState(false);
 
   // Initial Data Load
   useEffect(() => {
@@ -167,6 +168,12 @@ function App() {
             </span>
           )}
           <button 
+            className={`btn ${hideCompleted ? 'btn-primary' : ''}`}
+            onClick={() => setHideCompleted(!hideCompleted)}
+          >
+            {hideCompleted ? 'Show Completed' : 'Hide Completed'}
+          </button>
+          <button 
             className="btn btn-primary"
             onClick={() => handleOpenModal()}
           >
@@ -187,6 +194,7 @@ function App() {
             onUpdateStatus={handleUpdateTaskStatus}
             onDeleteTask={handleDeleteTask}
             onEditTask={handleOpenModal}
+            hideCompleted={hideCompleted}
           />
         </main>
       )}

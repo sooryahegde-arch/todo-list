@@ -2,12 +2,17 @@ import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { X } from 'lucide-react';
 
+const PERSONAL_CATEGORIES = ['Shopping', 'Agri Inputs', 'Others'];
+const OFFICE_CATEGORIES = ['Board Subject', 'Chairman Discussion', 'MD Discussion', 'Office Meeting', 'PCAS related', 'Recovery', 'Sectional meeting', 'Policy Preparation', 'Meetings', 'Others'];
+
 function TaskModal({ isOpen, onClose, onSave, taskToEdit = null }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('todo');
   const [dueDate, setDueDate] = useState('');
   const [assignedTo, setAssignedTo] = useState('');
+  const [workType, setWorkType] = useState('Office');
+  const [category, setCategory] = useState(OFFICE_CATEGORIES[0]);
 
   useEffect(() => {
     if (isOpen) {
@@ -17,15 +22,25 @@ function TaskModal({ isOpen, onClose, onSave, taskToEdit = null }) {
         setStatus(taskToEdit.status);
         setDueDate(taskToEdit.dueDate || '');
         setAssignedTo(taskToEdit.assignedTo || '');
+        setWorkType(taskToEdit.workType || 'Office');
+        setCategory(taskToEdit.category || (taskToEdit.workType === 'Personal' ? PERSONAL_CATEGORIES[0] : OFFICE_CATEGORIES[0]));
       } else {
         setTitle('');
         setDescription('');
         setStatus('todo');
         setDueDate('');
         setAssignedTo('');
+        setWorkType('Office');
+        setCategory(OFFICE_CATEGORIES[0]);
       }
     }
   }, [isOpen, taskToEdit]);
+
+  const handleWorkTypeChange = (e) => {
+    const newWorkType = e.target.value;
+    setWorkType(newWorkType);
+    setCategory(newWorkType === 'Personal' ? PERSONAL_CATEGORIES[0] : OFFICE_CATEGORIES[0]);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -39,6 +54,8 @@ function TaskModal({ isOpen, onClose, onSave, taskToEdit = null }) {
         status: status,
         dueDate: dueDate || null,
         assignedTo: assignedTo.trim() || null,
+        workType: workType,
+        category: category,
         reminded: taskToEdit.dueDate === dueDate ? taskToEdit.reminded : false, // Reset reminder if date changed
       });
     } else {
@@ -50,6 +67,8 @@ function TaskModal({ isOpen, onClose, onSave, taskToEdit = null }) {
         date: new Date().toISOString(),
         dueDate: dueDate || null,
         assignedTo: assignedTo.trim() || null,
+        workType: workType,
+        category: category,
         reminded: false,
       });
     }
@@ -114,6 +133,32 @@ function TaskModal({ isOpen, onClose, onSave, taskToEdit = null }) {
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
               />
+            </div>
+          </div>
+
+          <div className="form-group" style={{ display: 'flex', gap: '1rem' }}>
+            <div style={{ flex: 1 }}>
+              <label className="form-label">Work Type</label>
+              <select 
+                className="form-select"
+                value={workType}
+                onChange={handleWorkTypeChange}
+              >
+                <option value="Office">Office</option>
+                <option value="Personal">Personal</option>
+              </select>
+            </div>
+            <div style={{ flex: 1 }}>
+              <label className="form-label">Category</label>
+              <select 
+                className="form-select"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                {(workType === 'Personal' ? PERSONAL_CATEGORIES : OFFICE_CATEGORIES).map(cat => (
+                  <option key={cat} value={cat}>{cat}</option>
+                ))}
+              </select>
             </div>
           </div>
 
