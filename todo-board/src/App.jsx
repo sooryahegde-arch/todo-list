@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { PlusCircle, Kanban, X } from 'lucide-react';
 import TaskBoard from './components/TaskBoard';
 import TaskModal from './components/TaskModal';
+import SettingsModal from './components/SettingsModal';
 import { supabase, isSupabaseConfigured } from './supabase';
 
 function App() {
@@ -11,6 +12,20 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [isProfileExpanded, setIsProfileExpanded] = useState(false);
   const [hideCompleted, setHideCompleted] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  
+  const [workTypesConfig, setWorkTypesConfig] = useState(() => {
+    const saved = localStorage.getItem('todo-work-types');
+    if (saved) return JSON.parse(saved);
+    return {
+      'Office': ['Board Subject', 'Chairman Discussion', 'MD Discussion', 'Office Meeting', 'PCAS related', 'Recovery', 'Sectional meeting', 'Policy Preparation', 'Meetings', 'Others'],
+      'Personal': ['Shopping', 'Agri Inputs', 'Others']
+    };
+  });
+
+  useEffect(() => {
+    localStorage.setItem('todo-work-types', JSON.stringify(workTypesConfig));
+  }, [workTypesConfig]);
 
   // Initial Data Load
   useEffect(() => {
@@ -174,6 +189,12 @@ function App() {
             {hideCompleted ? 'Show Completed' : 'Hide Completed'}
           </button>
           <button 
+            className="btn"
+            onClick={() => setIsSettingsOpen(true)}
+          >
+            Settings
+          </button>
+          <button 
             className="btn btn-primary"
             onClick={() => handleOpenModal()}
           >
@@ -204,6 +225,14 @@ function App() {
         onClose={handleCloseModal} 
         onSave={handleSaveTask} 
         taskToEdit={editingTask}
+        workTypesConfig={workTypesConfig}
+      />
+
+      <SettingsModal 
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+        config={workTypesConfig}
+        setConfig={setWorkTypesConfig}
       />
 
       <div className={`modal-backdrop ${isProfileExpanded ? 'open' : ''}`} onClick={() => setIsProfileExpanded(false)}>

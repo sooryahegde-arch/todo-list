@@ -2,17 +2,16 @@ import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { X } from 'lucide-react';
 
-const PERSONAL_CATEGORIES = ['Shopping', 'Agri Inputs', 'Others'];
-const OFFICE_CATEGORIES = ['Board Subject', 'Chairman Discussion', 'MD Discussion', 'Office Meeting', 'PCAS related', 'Recovery', 'Sectional meeting', 'Policy Preparation', 'Meetings', 'Others'];
-
-function TaskModal({ isOpen, onClose, onSave, taskToEdit = null }) {
+function TaskModal({ isOpen, onClose, onSave, taskToEdit = null, workTypesConfig = {} }) {
+  const workTypes = Object.keys(workTypesConfig);
+  const initialWorkType = workTypes.length > 0 ? workTypes[0] : '';
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState('todo');
   const [dueDate, setDueDate] = useState('');
   const [assignedTo, setAssignedTo] = useState('');
-  const [workType, setWorkType] = useState('Office');
-  const [category, setCategory] = useState(OFFICE_CATEGORIES[0]);
+  const [workType, setWorkType] = useState(initialWorkType);
+  const [category, setCategory] = useState(initialWorkType ? (workTypesConfig[initialWorkType][0] || '') : '');
 
   useEffect(() => {
     if (isOpen) {
@@ -22,24 +21,27 @@ function TaskModal({ isOpen, onClose, onSave, taskToEdit = null }) {
         setStatus(taskToEdit.status);
         setDueDate(taskToEdit.dueDate || '');
         setAssignedTo(taskToEdit.assignedTo || '');
-        setWorkType(taskToEdit.workType || 'Office');
-        setCategory(taskToEdit.category || (taskToEdit.workType === 'Personal' ? PERSONAL_CATEGORIES[0] : OFFICE_CATEGORIES[0]));
+        
+        const wt = taskToEdit.workType || initialWorkType;
+        setWorkType(wt);
+        const categories = workTypesConfig[wt] || [];
+        setCategory(taskToEdit.category || (categories.length > 0 ? categories[0] : ''));
       } else {
         setTitle('');
         setDescription('');
         setStatus('todo');
         setDueDate('');
         setAssignedTo('');
-        setWorkType('Office');
-        setCategory(OFFICE_CATEGORIES[0]);
+        setWorkType(initialWorkType);
+        setCategory(initialWorkType ? (workTypesConfig[initialWorkType][0] || '') : '');
       }
     }
-  }, [isOpen, taskToEdit]);
+  }, [isOpen, taskToEdit, workTypesConfig]); // Removed initialWorkType from dependencies to avoid loop if it evaluates lazily
 
   const handleWorkTypeChange = (e) => {
     const newWorkType = e.target.value;
     setWorkType(newWorkType);
-    setCategory(newWorkType === 'Personal' ? PERSONAL_CATEGORIES[0] : OFFICE_CATEGORIES[0]);
+    setCategory(workTypesConfig[newWorkType]?.[0] || '');
   };
 
   const handleSubmit = (e) => {
@@ -144,8 +146,9 @@ function TaskModal({ isOpen, onClose, onSave, taskToEdit = null }) {
                 value={workType}
                 onChange={handleWorkTypeChange}
               >
-                <option value="Office">Office</option>
-                <option value="Personal">Personal</option>
+                {workTypes.map(wt => (
+                  <option key={wt} value={wt}>{wt}</option>
+                ))}
               </select>
             </div>
             <div style={{ flex: 1 }}>
@@ -155,7 +158,7 @@ function TaskModal({ isOpen, onClose, onSave, taskToEdit = null }) {
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               >
-                {(workType === 'Personal' ? PERSONAL_CATEGORIES : OFFICE_CATEGORIES).map(cat => (
+                {(workTypesConfig[workType] || []).map(cat => (
                   <option key={cat} value={cat}>{cat}</option>
                 ))}
               </select>
