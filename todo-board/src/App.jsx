@@ -15,6 +15,7 @@ function App() {
   const [hideCompleted, setHideCompleted] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [session, setSession] = useState(null);
+  const [userId, setUserId] = useState(null);
   const [isLocalMode, setIsLocalMode] = useState(!isSupabaseConfigured);
   const [authLoading, setAuthLoading] = useState(true);
   
@@ -46,6 +47,7 @@ function App() {
     if (isSupabaseConfigured) {
       supabase.auth.getSession().then(({ data: { session } }) => {
         setSession(session);
+        setUserId(session?.user?.id || null);
         setAuthLoading(false);
       });
 
@@ -53,6 +55,7 @@ function App() {
         data: { subscription },
       } = supabase.auth.onAuthStateChange((_event, session) => {
         setSession(session);
+        setUserId(session?.user?.id || null);
       });
 
       return () => subscription.unsubscribe();
@@ -90,7 +93,7 @@ function App() {
     };
 
     fetchTasks();
-  }, [session, isLocalMode]); // Refetch when auth changes
+  }, [userId, isLocalMode]); // Refetch when user changes, not on every session refresh
 
   // Save to Local Storage as a fallback/cache
   useEffect(() => {
@@ -153,11 +156,13 @@ function App() {
 
   const handleSaveTask = async (savedTask) => {
     // Optimistic UI update
-    if (editingTask) {
-      setTasks(tasks.map(task => task.id === savedTask.id ? savedTask : task));
-    } else {
-      setTasks([...tasks, savedTask]);
-    }
+    setTasks(prevTasks => {
+      if (editingTask) {
+        return prevTasks.map(task => task.id === savedTask.id ? savedTask : task);
+      } else {
+        return [...prevTasks, savedTask];
+      }
+    });
     handleCloseModal();
 
     if (isSupabaseConfigured) {
@@ -173,7 +178,7 @@ function App() {
 
   const handleUpdateTaskStatus = async (taskId, newStatus) => {
     // Optimistic UI update
-    setTasks(tasks.map(task => 
+    setTasks(prevTasks => prevTasks.map(task => 
       task.id === taskId ? { ...task, status: newStatus } : task
     ));
 
@@ -185,7 +190,7 @@ function App() {
 
   const handleDeleteTask = async (taskId) => {
     // Optimistic UI update
-    setTasks(tasks.filter(task => task.id !== taskId));
+    setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
 
     if (isSupabaseConfigured) {
       const { error } = await supabase.from('tasks').delete().eq('id', taskId);
