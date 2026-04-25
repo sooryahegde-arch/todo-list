@@ -39,7 +39,21 @@ function TaskCard({ task, color, onDelete, onEdit, assignees = [] }) {
     const cleanMobile = assigneeMobile.replace(/\D/g, '');
     
     const deadlineStr = task.dueDate ? `${formatDate(task.dueDate)} ${formatTime(task.dueDate)}` : 'No deadline';
-    const message = `Task: ${task.title} | Deadline: ${deadlineStr}`;
+    const descStr = task.description ? task.description : 'N/A';
+    
+    const message = `Dear ${assigneeName},
+
+Please be advised of the following task assignment:
+
+Task Name: ${task.title}
+
+Description: ${descStr}
+
+Deadline: ${deadlineStr}
+
+Regards,
+Department Head`;
+    
     const url = `https://wa.me/${cleanMobile}?text=${encodeURIComponent(message)}`;
     
     window.open(url, '_blank', 'noopener,noreferrer');
