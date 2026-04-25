@@ -9,7 +9,7 @@ const COLUMNS = [
   { id: 'transferred', title: 'Transferred', color: 'var(--status-transferred)' },
 ];
 
-function TaskBoard({ tasks, onUpdateStatus, onDeleteTask, onEditTask, hideCompleted }) {
+function TaskBoard({ tasks, onUpdateStatus, onDeleteTask, onEditTask, hideCompleted, assignees }) {
   const visibleColumns = hideCompleted ? COLUMNS.filter(c => c.id !== 'completed') : COLUMNS;
 
   return (
@@ -22,6 +22,7 @@ function TaskBoard({ tasks, onUpdateStatus, onDeleteTask, onEditTask, hideComple
           onUpdateStatus={onUpdateStatus}
           onDeleteTask={onDeleteTask}
           onEditTask={onEditTask}
+          assignees={assignees}
         />
       ))}
     </>

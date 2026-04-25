@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { X } from 'lucide-react';
 
-function TaskModal({ isOpen, onClose, onSave, taskToEdit = null, workTypesConfig = {} }) {
+function TaskModal({ isOpen, onClose, onSave, taskToEdit = null, workTypesConfig = {}, assignees = [] }) {
   const workTypes = Object.keys(workTypesConfig);
   const initialWorkType = workTypes.length > 0 ? workTypes[0] : '';
   const [title, setTitle] = useState('');
@@ -167,13 +167,20 @@ function TaskModal({ isOpen, onClose, onSave, taskToEdit = null, workTypesConfig
 
           <div className="form-group">
             <label className="form-label">Work Assigned To</label>
-            <input 
-              type="text" 
-              className="form-input" 
-              placeholder="e.g. John Doe"
+            <select 
+              className="form-select"
               value={assignedTo}
               onChange={(e) => setAssignedTo(e.target.value)}
-            />
+            >
+              <option value="">-- Unassigned --</option>
+              {assignees.map(a => (
+                <option key={a.id} value={a.id}>{a.name}</option>
+              ))}
+              {/* Fallback for legacy string assignees not in master */}
+              {assignedTo && !assignees.find(a => a.id === assignedTo) && (
+                <option value={assignedTo}>{assignedTo} (Legacy)</option>
+              )}
+            </select>
           </div>
 
           <div className="modal-actions">

@@ -27,9 +27,19 @@ function App() {
     };
   });
 
+  const [assignees, setAssignees] = useState(() => {
+    const saved = localStorage.getItem('todo-assignees');
+    if (saved) return JSON.parse(saved);
+    return []; // format: { id, name, mobile }
+  });
+
   useEffect(() => {
     localStorage.setItem('todo-work-types', JSON.stringify(workTypesConfig));
   }, [workTypesConfig]);
+
+  useEffect(() => {
+    localStorage.setItem('todo-assignees', JSON.stringify(assignees));
+  }, [assignees]);
 
   // Auth Status
   useEffect(() => {
@@ -265,6 +275,7 @@ function App() {
             onDeleteTask={handleDeleteTask}
             onEditTask={handleOpenModal}
             hideCompleted={hideCompleted}
+            assignees={assignees}
           />
         </main>
       )}
@@ -275,6 +286,7 @@ function App() {
         onSave={handleSaveTask} 
         taskToEdit={editingTask}
         workTypesConfig={workTypesConfig}
+        assignees={assignees}
       />
 
       <SettingsModal 
@@ -282,6 +294,8 @@ function App() {
         onClose={() => setIsSettingsOpen(false)}
         config={workTypesConfig}
         setConfig={setWorkTypesConfig}
+        assignees={assignees}
+        setAssignees={setAssignees}
       />
 
       <div className={`modal-backdrop ${isProfileExpanded ? 'open' : ''}`} onClick={() => setIsProfileExpanded(false)}>

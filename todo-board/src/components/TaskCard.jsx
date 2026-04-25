@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Trash2, Pencil, Calendar, Clock, User } from 'lucide-react';
+import { Trash2, Pencil, Calendar, Clock, User, MessageCircle } from 'lucide-react';
 
-function TaskCard({ task, color, onDelete, onEdit }) {
+function TaskCard({ task, color, onDelete, onEdit, assignees = [] }) {
   const [isDragging, setIsDragging] = useState(false);
 
   const handleDragStart = (e) => {
@@ -27,6 +27,24 @@ function TaskCard({ task, color, onDelete, onEdit }) {
 
   const isOverdue = task.dueDate && new Date(task.dueDate) < new Date() && task.status !== 'completed';
 
+  const assigneeObj = assignees.find(a => a.id === task.assignedTo || a.name === task.assignedTo);
+  const assigneeName = assigneeObj ? assigneeObj.name : task.assignedTo;
+  const assigneeMobile = assigneeObj ? assigneeObj.mobile : null;
+
+  const handleWhatsApp = (e) => {
+    e.stopPropagation();
+    if (!assigneeMobile) return;
+    
+    // Clean mobile number (remove non-digits)
+    const cleanMobile = assigneeMobile.replace(/\D/g, '');
+    
+    const deadlineStr = task.dueDate ? `${formatDate(task.dueDate)} ${formatTime(task.dueDate)}` : 'No deadline';
+    const message = `Task: ${task.title} | Deadline: ${deadlineStr}`;
+    const url = `https://wa.me/${cleanMobile}?text=${encodeURIComponent(message)}`;
+    
+    window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <div 
       className={`task-card ${isDragging ? 'dragging' : ''}`}
@@ -42,10 +60,10 @@ function TaskCard({ task, color, onDelete, onEdit }) {
         </p>
       )}
       
-      {task.assignedTo && (
+      {assigneeName && (
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.75rem', color: '#a5b4fc', marginBottom: '0.75rem' }}>
           <User size={12} />
-          <span>Assigned to: {task.assignedTo}</span>
+          <span>Assigned to: {assigneeName}</span>
         </div>
       )}
 
@@ -71,6 +89,11 @@ function TaskCard({ task, color, onDelete, onEdit }) {
         </div>
         
         <div className="task-actions">
+          {assigneeMobile && (
+            <button className="icon-btn" onClick={handleWhatsApp} title={`WhatsApp ${assigneeName}`} style={{ color: '#25D366' }}>
+              <MessageCircle size={14} />
+            </button>
+          )}
           <button className="icon-btn" onClick={onEdit} title="Edit Task">
             <Pencil size={14} />
           </button>

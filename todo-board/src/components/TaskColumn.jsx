@@ -14,7 +14,7 @@ const getColumnIcon = (id, color) => {
   }
 };
 
-function TaskColumn({ column, tasks, onUpdateStatus, onDeleteTask, onEditTask }) {
+function TaskColumn({ column, tasks, onUpdateStatus, onDeleteTask, onEditTask, assignees }) {
   const [isDragOver, setIsDragOver] = useState(false);
 
   const handleDragOver = (e) => {
@@ -58,6 +58,7 @@ function TaskColumn({ column, tasks, onUpdateStatus, onDeleteTask, onEditTask })
             color={column.color}
             onDelete={() => onDeleteTask(task.id)}
             onEdit={() => onEditTask(task)}
+            assignees={assignees}
           />
         ))}
       </div>
