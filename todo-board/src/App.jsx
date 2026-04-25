@@ -325,6 +325,10 @@ function App() {
           </div>
         </div>
       </div>
+
+      <div style={{ position: 'fixed', bottom: '0.5rem', right: '1rem', fontSize: '0.7rem', color: 'var(--text-muted)', opacity: 0.5, pointerEvents: 'none', zIndex: 1000 }}>
+        Version code: {import.meta.env.VITE_APP_VERSION || 'dev'}
+      </div>
     </div>
   );
 }
