@@ -189,10 +189,19 @@ function App() {
   };
 
   const handleDeleteTask = async (taskId) => {
+    const taskToDelete = tasks.find(t => t.id === taskId);
     // Optimistic UI update
     setTasks(prevTasks => prevTasks.filter(task => task.id !== taskId));
 
     if (isSupabaseConfigured) {
+      // Clean up orphaned attachments to save free tier limits
+      if (taskToDelete?.attachments?.length > 0) {
+        const filePaths = taskToDelete.attachments.map(a => a.path).filter(Boolean);
+        if (filePaths.length > 0) {
+          supabase.storage.from('attachments').remove(filePaths).catch(err => console.error("Error deleting attachments:", err));
+        }
+      }
+
       const { error } = await supabase.from('tasks').delete().eq('id', taskId);
       if (error) console.error("Error deleting task in Supabase:", error);
     }

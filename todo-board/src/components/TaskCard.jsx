@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Trash2, Pencil, Calendar, Clock, User, MessageCircle } from 'lucide-react';
+import { Trash2, Pencil, Calendar, Clock, User, MessageCircle, Paperclip } from 'lucide-react';
 
 function TaskCard({ task, color, onDelete, onEdit, assignees = [] }) {
   const [isDragging, setIsDragging] = useState(false);
@@ -102,18 +102,26 @@ Department Head`;
           )}
         </div>
         
-        <div className="task-actions">
-          {assigneeMobile && (
-            <button className="icon-btn" onClick={handleWhatsApp} title={`WhatsApp ${assigneeName}`} style={{ color: '#25D366' }}>
-              <MessageCircle size={14} />
-            </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          {task.attachments && task.attachments.length > 0 && (
+            <div title={`${task.attachments.length} Attachments`} style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', color: 'var(--text-muted)', fontSize: '0.75rem', background: 'rgba(255,255,255,0.05)', padding: '0.2rem 0.4rem', borderRadius: '4px' }}>
+              <Paperclip size={12} />
+              <span>{task.attachments.length}</span>
+            </div>
           )}
-          <button className="icon-btn" onClick={onEdit} title="Edit Task">
-            <Pencil size={14} />
-          </button>
-          <button className="icon-btn danger" onClick={onDelete} title="Delete Task">
-            <Trash2 size={14} />
-          </button>
+          <div className="task-actions">
+            {assigneeMobile && (
+              <button className="icon-btn" onClick={handleWhatsApp} title={`WhatsApp ${assigneeName}`} style={{ color: '#25D366' }}>
+                <MessageCircle size={14} />
+              </button>
+            )}
+            <button className="icon-btn" onClick={onEdit} title="Edit Task">
+              <Pencil size={14} />
+            </button>
+            <button className="icon-btn danger" onClick={onDelete} title="Delete Task">
+              <Trash2 size={14} />
+            </button>
+          </div>
         </div>
       </div>
     </div>
